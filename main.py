@@ -109,7 +109,7 @@ def client_info(message: Message) -> None:
             else:
                 full_info += "\nПокупок нет"
                 bot.send_message(user_id, full_info)
-    except(ValueError, IndexError):
+    except (ValueError, IndexError):
         bot.send_message(user_id, "Некорректный номер клиента! Введите корректный номер!")
 
 
@@ -130,11 +130,23 @@ def additive_add_purchase(message: Message) -> None:
             new_purchase.purchase_data = purchase_date  # Создали покупку
             examination_client.purchases.append(new_purchase)
             bot.send_message(user_id,
-           f"Покупка для клиента{examination_client.first_name}{examination_client.last_name} добавлена")
+        f"Покупка для клиента{examination_client.first_name}{examination_client.last_name} добавлена")
         else:
             bot.send_message(user_id, "Клиент с указанным удостоверением личности не найден")
-    except(ValueError, IndexError, TypeError):
+    except (ValueError, IndexError, TypeError):
         bot.send_message(user_id, "Некорректный формат ввода! Введите корректный формат!")
+
+
+@bot.message_handler(commands=['delite_client'])
+def delite_client(message: Message) -> None:
+    user_id: int = message.chat.id
+    text = message.text[14:].strip()
+    client_index = int(text)
+    if 1 <= client_index <= len(clients):
+        clients.pop(client_index - 1)   # Удаляет выбранного клиента
+        bot.send_message(user_id, "Клиент удален! Для просмотра базы клиентов отправьте /show_base")
+    else:
+        bot.send_message(user_id, "Некорректный номер клиента! Введите корректный номер!")
 
 
 if __name__ == "__main__":
